@@ -68,4 +68,4 @@ where:
 * `resource_name` is the specific resource you try to call (e.g. `categ `, `event `, `room`)
 * `resource_id` is the id of the resource
 * `location` location of the resource, e.g. the location of a room.
-* `output_type` desired output format (e.g. *json* ,  *jsonp* ,  *xml* ,  *html* ,  *ics* ,  *atom* , *bin*) [default is `json]`
+* `output_type` desired output format (e.g. *json* ,  *jsonp* ,  *xml* ,  *html* ,  *ics* ,  *atom* , *bin*) [default is `json`]
