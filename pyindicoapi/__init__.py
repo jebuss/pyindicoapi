@@ -1,8 +1,5 @@
 import requests
 
-test = True
-
-
 class IndicoCategory:
     """
     Represents a response from the Indico API for categories.
