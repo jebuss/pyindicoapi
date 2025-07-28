@@ -38,6 +38,12 @@ class IndicoCategory:
 
     def __repr__(self):
         return f"IndicoCategoryResponse(data={self.get_attributes()})"
+    
+    def as_dict(self):
+        """
+        Return the category attributes as a dictionary.
+        """
+        return self.get_attributes()
 
 
 class IndicoAPI:
