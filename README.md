@@ -54,3 +54,18 @@ api.list_events()
 # get event with id = 1
 event = get_event(1)
 ```
+
+#### Custom resource
+
+You may also call a custom resource from the Indico API according to the [API resources](https://docs.getindico.io/en/latest/http-api/exporters/)
+
+```python
+resource = api.get_custom_resource(resource_name, resource_id, location=None, output_type='json')
+```
+
+where:
+
+* `resource_name` is the specific resource you try to call (e.g. `categ `, `event `, `room`)
+* `resource_id` is the id of the resource
+* `location` location of the resource, e.g. the location of a room.
+* `output_type` desired output format (e.g. *json* ,  *jsonp* ,  *xml* ,  *html* ,  *ics* ,  *atom* , *bin*) [default is `json]`
