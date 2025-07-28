@@ -1,5 +1,6 @@
 import requests
 
+
 class IndicoCategory:
     """
     Represents a response from the Indico API for categories.
@@ -67,11 +68,15 @@ class IndicoAPI:
         response.raise_for_status()
         return response.json()
 
-    def get_custom_resource(self, resource_name, resource_id, params=None):
+    def get_custom_resource(self, resource_name, resource_id, location=None, output_type='json', params=None):
         """
         Get details of a specific custom resource.
         """
-        return self._request('GET', f'export/{resource_name}/{resource_id}.json', params=params)
+        if location:
+            endpoint = f'export/{resource_name}/{location}/{resource_id}.{output_type}'
+        else:
+            endpoint = f'export/{resource_name}/{resource_id}.{output_type}'
+        return self._request('GET', endpoint, params=params)
 
     def get_event(self, event_id, params=None):
         """
