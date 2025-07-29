@@ -7,7 +7,11 @@ setup(
     author="Jens Buss",
     author_email="jens.buss@tu-dortmund.de",
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        "requests>=2.25.1",
+        "pandas>=1.1.5",
+        "click>=7.1.2",
+    ],
     python_requires=">=3.7",
     url="https://github.com/jebuss/pyIndicoapi",
     classifiers=[
