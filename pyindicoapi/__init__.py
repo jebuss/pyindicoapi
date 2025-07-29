@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 
 class IndicoCategory:
@@ -38,7 +39,7 @@ class IndicoCategory:
 
     def __repr__(self):
         return f"IndicoCategoryResponse(data={self.get_attributes()})"
-    
+
     def as_dict(self):
         """
         Return the category attributes as a dictionary.
@@ -57,7 +58,7 @@ class IndicoAPI:
         self.api_key = api_key
         self.verify_ssl = verify_ssl
 
-    def _request(self, method, endpoint, params=None, data=None, files=None):
+    def _request(self, method, endpoint, params={}, data=None, files=None):
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         headers = {}
         if self.api_key:
@@ -74,7 +75,7 @@ class IndicoAPI:
         response.raise_for_status()
         return response.json()
 
-    def get_custom_resource(self, resource_name, resource_id, location=None, output_type='json', params=None):
+    def get_custom_resource(self, resource_name, resource_id, location=None, output_type='json', params={}):
         """
         Get details of a specific custom resource.
         """
@@ -84,7 +85,7 @@ class IndicoAPI:
             endpoint = f'export/{resource_name}/{resource_id}.{output_type}'
         return self._request('GET', endpoint, params=params)
 
-    def get_event(self, event_id, params=None):
+    def get_event(self, event_id, params={}):
         """
         Get details of a specific event.
         """
@@ -95,13 +96,13 @@ class IndicoAPI:
         List events with optional filters.
         """
 
-        category = self.get_category(category_id, params=None)
+        category = self.get_category(category_id, params={})
         if isinstance(category, dict):
             events = category.get('results')
 
         return events
 
-    def get_category(self, category_id, params=None):
+    def get_category(self, category_id, params={}):
         """
         Get details of a specific category.
         """
@@ -115,7 +116,7 @@ class IndicoAPI:
         If a specific root_category_id is provided, it will list categories under that root.
         """
         list_of_categories = list()
-        root_category = self.get_category(root_category_id, params=None)
+        root_category = self.get_category(root_category_id, params={})
 
         if isinstance(root_category, dict):
             categories = root_category.get(
@@ -126,10 +127,33 @@ class IndicoAPI:
 
         return list_of_categories
 
-    def get_user(self, user_id, params=None):
+    def get_user(self, user_id, params={}):
         """
         Get details of a specific user.
         """
         return self._request('GET', f'export/user/{user_id}.json', params=params)
+
+    def get_contribution(self, event_id, contribution_id, params={}, output_type='dict'):
+        """
+        Get details of a specific contribution.
+        """
+        params['detail'] = 'contributions'
+        event = self.get_event(event_id, params=params)
+        if not isinstance(event, dict):
+            raise ValueError(
+                f"Event with ID {event_id} not found or invalid response.")
+        if 'results' not in event or not event['results']:
+            raise ValueError(
+                f"No contributions found for event with ID {event_id}.")
+
+        df = pd.DataFrame(event['results'][0]['contributions'])
+        query_result = df.query(f"db_id=={contribution_id}")
+
+        if output_type == 'dict':
+            return query_result.to_dict()
+        elif output_type == 'dataframe':
+            return query_result
+        else:
+            raise ValueError(f"Unknown output type: {output_type}")
 
     # Add more methods as needed, following the API reference.
